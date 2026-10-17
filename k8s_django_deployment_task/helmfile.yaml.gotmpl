@@ -1,0 +1,26 @@
+environments:
+  local:
+    values:
+      - values/local.yaml
+  production:
+    values:
+      - values/production.yaml
+
+---
+
+helmDefaults:
+  wait: true
+  timeout: 600
+
+releases:
+  - name: healthchecks
+    namespace: default
+    chart: ./helm_chart
+    values:
+      - ./helm_chart/values.yaml
+      - values/{{ .Environment.Name }}.yaml
+    set:
+      - name: secret.dbPassword
+        value: {{ requiredEnv "HC_DB_PASSWORD" | quote }}
+      - name: secret.djangoSecretKey
+        value: {{ requiredEnv "HC_DJANGO_SECRET_KEY" | quote }}

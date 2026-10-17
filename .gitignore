@@ -7,3 +7,11 @@ __pycache__/
 hc.sqlite
 hc/local_settings.py
 static-collected
+.env.*
+!.env.example
+docker/.env
+secrets/*.yaml
+!secrets/*.sops.yaml
+keys.txt
+*.agekey
+.age/

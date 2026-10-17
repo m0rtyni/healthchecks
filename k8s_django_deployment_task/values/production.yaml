@@ -1,0 +1,16 @@
+# Replace these placeholders before deploying to AWS.
+postgres:
+  enabled: false
+
+config:
+  allowedHosts: "REPLACE_WITH_REAL_DOMAIN"
+  dbHost: "REPLACE_WITH_RDS_ENDPOINT"
+  siteRoot: "https://REPLACE_WITH_REAL_DOMAIN"
+
+ingress:
+  enabled: true
+  className: nginx
+  host: "REPLACE_WITH_REAL_DOMAIN"
+  tls:
+    enabled: true
+    secretName: healthchecks-tls

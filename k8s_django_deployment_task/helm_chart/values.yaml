@@ -1,0 +1,54 @@
+replicaCount: 2
+
+image:
+  repository: healthchecks-local
+  tag: dev
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 8080
+  targetPort: 8080
+
+containerPort: 8080
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 4
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80
+
+config:
+  debug: "False"
+  allowedHosts: "localhost,127.0.0.1,healthchecks.local"
+  dbEngine: postgres
+  dbHost: "healthchecks-db"
+  dbPort: "5432"
+  dbName: hc
+  dbUser: hc_user
+  siteRoot: "http://healthchecks.local"
+  defaultFromEmail: "healthchecks@example.org"
+
+secret:
+  dbPassword: ""
+  djangoSecretKey: ""
+
+ingress:
+  enabled: true
+  className: nginx
+  host: healthchecks.local
+  tls:
+    enabled: false
+    secretName: healthchecks-tls
+
+postgres:
+  enabled: true
