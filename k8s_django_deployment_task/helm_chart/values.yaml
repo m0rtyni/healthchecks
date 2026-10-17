@@ -49,6 +49,12 @@ ingress:
   tls:
     enabled: false
     secretName: healthchecks-tls
+    clusterIssuer: letsencrypt-prod
 
 postgres:
   enabled: true
+
+certManager:
+  enabled: false
+  email: ""
+  server: https://acme-v02.api.letsencrypt.org/directory
