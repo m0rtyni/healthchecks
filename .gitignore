@@ -15,3 +15,24 @@ secrets/*.yaml
 keys.txt
 *.agekey
 .age/
+
+# Terraform
+**/.terraform/*
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfplan
+crash.log
+crash.*.log
+**/terraform.tfvars
+**/terraform.tfvars.json
+*.auto.tfvars
+*.auto.tfvars.json
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+**/tfplan
+**/.terraform/

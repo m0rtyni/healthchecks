@@ -46,6 +46,8 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-secret
                   key: DB_PASSWORD
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
           readinessProbe:
             exec:
               command: ["sh", "-c", "pg_isready -U \"$POSTGRES_USER\" -d \"$POSTGRES_DB\""]
@@ -65,6 +67,7 @@ spec:
     - metadata:
         name: postgres-data
       spec:
+        storageClassName: {{ .Values.postgres.storageClassName | default "gp3" | quote }}
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
