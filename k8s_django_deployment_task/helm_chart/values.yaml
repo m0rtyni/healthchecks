@@ -51,8 +51,6 @@ ingress:
     secretName: healthchecks-tls
     clusterIssuer: letsencrypt-prod
 
-postgres:
-  enabled: true
 
 certManager:
   enabled: false

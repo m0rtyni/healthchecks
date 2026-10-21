@@ -17,3 +17,13 @@ output "public_subnets" {
   description = "Public subnet IDs"
   value       = module.vpc.public_subnets
 }
+
+output "rds_endpoint" {
+  description = "PostgreSQL endpoint for Healthchecks"
+  value       = aws_db_instance.healthchecks.address
+}
+
+output "rds_port" {
+  description = "PostgreSQL port"
+  value       = aws_db_instance.healthchecks.port
+}

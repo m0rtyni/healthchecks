@@ -1,4 +1,3 @@
-
 environments:
   local:
     values:
@@ -19,9 +18,21 @@ helmDefaults:
   timeout: 600
 
 releases:
+  - name: healthchecks-db
+    namespace: default
+    chart: ../postgres_chart
+    installed: {{ eq .Environment.Name "local" }}
+    values:
+      - ../postgres_chart/values.yaml
+      - secret:
+          dbPassword: {{ .Values.secret.dbPassword | quote }}
+
   - name: healthchecks
     namespace: default
     chart: ../helm_chart
     values:
       - ../helm_chart/values.yaml
       - ../values/{{ .Environment.Name }}.yaml
+      - secret:
+          dbPassword: {{ .Values.secret.dbPassword | quote }}
+          djangoSecretKey: {{ .Values.secret.djangoSecretKey | quote }}

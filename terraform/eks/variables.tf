@@ -93,3 +93,10 @@ variable "ecr_image_mutability" {
     error_message = "ecr_image_mutability must be MUTABLE or IMMUTABLE."
   }
 }
+
+variable "db_password" {
+  description = "Password for the Healthchecks PostgreSQL database"
+  type        = string
+  sensitive   = true
+  nullable    = false
+}

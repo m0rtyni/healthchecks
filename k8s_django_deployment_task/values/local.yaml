@@ -1,5 +1,3 @@
-postgres:
-  enabled: true
 
 ingress:
   enabled: true

@@ -1,22 +1,23 @@
-# Replace these placeholders before deploying to AWS.
-postgres:
-  enabled: false
-
 config:
-  allowedHosts: "REPLACE_WITH_REAL_DOMAIN"
-  dbHost: "REPLACE_WITH_RDS_ENDPOINT"
-  siteRoot: "https://REPLACE_WITH_REAL_DOMAIN"
+  allowedHosts: "localhost,127.0.0.1,healthchecks.local,healthchecks,healthchecks.default,healthchecks.default.svc,healthchecks.default.svc.cluster.local"
+  dbHost: "healthchecks-postgres.czs0igou26lz.eu-central-1.rds.amazonaws.com"
+  siteRoot: "http://localhost:8080"
+
+image:
+  repository: "014468369410.dkr.ecr.eu-central-1.amazonaws.com/healthchecks"
+  tag: eks
+  pullPolicy: IfNotPresent
 
 ingress:
-  enabled: true
+  enabled: false
   className: nginx
-  host: "REPLACE_WITH_REAL_DOMAIN"
+  host: "localhost"
   tls:
-    enabled: true
+    enabled: false
     secretName: healthchecks-tls
     clusterIssuer: letsencrypt-prod
 
 certManager:
-  enabled: true
-  email: "REPLACE_WITH_YOUR_EMAIL"
+  enabled: false
+  email: ""
   server: https://acme-v02.api.letsencrypt.org/directory

@@ -1,0 +1,29 @@
+image:
+  repository: postgres
+  tag: "16"
+  pullPolicy: IfNotPresent
+
+database:
+  name: hc
+  user: hc_user
+  port: 5432
+
+service:
+  name: healthchecks-db
+  port: 5432
+
+storage:
+  size: 1Gi
+  # Leave empty to use the cluster's default StorageClass.
+  storageClassName: ""
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 256Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+secret:
+  dbPassword: ""
