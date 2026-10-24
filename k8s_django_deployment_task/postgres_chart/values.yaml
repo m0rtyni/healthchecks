@@ -25,5 +25,12 @@ resources:
     cpu: 500m
     memory: 512Mi
 
+podSecurityContext:
+  seccompProfile:
+    type: RuntimeDefault
+
+containerSecurityContext:
+  allowPrivilegeEscalation: false
+  
 secret:
   dbPassword: ""
