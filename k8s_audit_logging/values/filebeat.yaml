@@ -1,0 +1,41 @@
+daemonset:
+  enabled: true
+
+  extraVolumes:
+    - name: kubernetes-audit-logs
+      hostPath:
+        path: /var/log/kubernetes/audit
+        type: Directory
+
+  extraVolumeMounts:
+    - name: kubernetes-audit-logs
+      mountPath: /var/log/kubernetes/audit
+      readOnly: true
+
+  filebeatConfig:
+    filebeat.yml: |
+      filebeat.inputs:
+        - type: filestream
+          id: kubernetes-audit
+          paths:
+            - /var/log/kubernetes/audit/audit.log
+          fields:
+            log_type: kubernetes-audit
+          fields_under_root: true
+
+      output.logstash:
+        hosts: ["audit-logstash-logstash:5044"]
+
+  resources:
+    requests:
+      cpu: "50m"
+      memory: "100Mi"
+    limits:
+      cpu: "300m"
+      memory: "200Mi"
+
+deployment:
+  enabled: false
+
+image: "docker.elastic.co/beats/filebeat"
+imageTag: "8.5.1"

@@ -1,0 +1,90 @@
+replicas: 1
+
+image: "docker.elastic.co/logstash/logstash"
+imageTag: "8.5.1"
+
+logstashJavaOpts: "-Xms512m -Xmx512m"
+
+extraPorts:
+  - name: beats
+    containerPort: 5044
+    protocol: TCP
+
+service:
+  type: ClusterIP
+  ports:
+    - name: beats
+      port: 5044
+      protocol: TCP
+      targetPort: 5044
+
+resources:
+  requests:
+    cpu: "100m"
+    memory: "768Mi"
+  limits:
+    cpu: "700m"
+    memory: "1Gi"
+
+persistence:
+  enabled: false
+
+logstashPipeline:
+  logstash.conf: |
+    input {
+      beats {
+        port => 5044
+      }
+    }
+
+    filter {
+      if [log_type] == "kubernetes-audit" {
+        json {
+          source => "message"
+          target => "audit"
+          tag_on_failure => ["_audit_json_parse_failure"]
+        }
+
+        if [audit][verb] {
+          mutate {
+            add_field => {
+              "audit_verb" => "%{[audit][verb]}"
+              "audit_user" => "%{[audit][user][username]}"
+              "audit_resource" => "%{[audit][objectRef][resource]}"
+              "audit_namespace" => "%{[audit][objectRef][namespace]}"
+              "audit_status" => "%{[audit][responseStatus][code]}"
+            }
+          }
+        }
+      }
+    }
+
+    output {
+      if [log_type] == "kubernetes-audit" {
+        elasticsearch {
+          hosts => ["https://elasticsearch-master:9200"]
+          user => "${ELASTICSEARCH_USERNAME}"
+          password => "${ELASTICSEARCH_PASSWORD}"
+          ssl => true
+          cacert => "/usr/share/logstash/config/certs/ca.crt"
+          index => "kubernetes-audit-%{+YYYY.MM.dd}"
+        }
+      }
+    }
+
+extraEnvs:
+  - name: ELASTICSEARCH_USERNAME
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-master-credentials
+        key: username
+  - name: ELASTICSEARCH_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: elasticsearch-master-credentials
+        key: password
+
+secretMounts:
+  - name: elasticsearch-master-certs
+    secretName: elasticsearch-master-certs
+    path: /usr/share/logstash/config/certs
